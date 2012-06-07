@@ -1,4 +1,4 @@
-% code assumes MRST is already initiated
+% code assumes MRST and xmsmfem is already initiated
 
 % helper function to initiate workers 
 %   and construct composite variables

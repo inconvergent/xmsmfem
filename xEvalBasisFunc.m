@@ -1,14 +1,77 @@
 function [coV, coP] = xEvalBasisFunc(g,cg,coX,coiG,...
                        coFaces,weight,mob,src,bc,overlap)
 %
+% "private" function called from xGenerateCoarseSystem
+% used to construct and solve local flow problems.
+%
+% PARAMETERS:
+%
+% - G -- Composite variable. geometry structure from MRST.
+%
+% - CG -- composite variable. Coarse geometry structure from MRST.
+%
+% - coX -- Distributed cell array. Local part on each worker contains all
+%   inner products that will be needed on that worker to construct basis
+%   functions.
+%
+% - coiG -- Distributed cell array. One cell pr. worker. that is, for worker 
+%   w we have that coiG{w}{i} == k means that coX{w}{i} is inner product 
+%   of global cell k.
+%
+% - coFaces -- Distributed array. Face indices.
+%   running: 
+%     lpFaces = getLocalPart(coFaces);
+%   on a worker, means that lpFaces(:) will be calculated on that worker.
+%
+% - weight -- Composite variable. resulting from evalBasisSource 
+%     in xGenerateCoarseSystem
+%
+% % - mob -- Composite variable. Total mobility. One scalar value for each
+%     cell in the underlying (fine) model.
+%
+% - src -- Composite variable. Explicit source contributions as defined by
+%     'addSource'. 
+%
+% - BC -- Composite variable. Boundary conditions structure from MRST.
+%
+% - overlap -- Composite variable. Number of fine-grid cells in each 
+%     physical direction with which to extend the supporting domain of any
+%     given basis functions.
 %
 %
+% RETURNS:
+%   V - distributed cell array - one element for each coarse face in 'faces', of cell
+%       arrays (tuples) of SPARSE input vectors (and auxillary information)
+%       from which the flux basis function matrix B*\Psi may be formed.
 %
+%   P - Distributed cell array - one element for each coarse face in 'faces', of cell
+%       arrays (tuples) of SPARSE input vectors (and auxillary information)
+%       from which the pressure basis function matrix Phi may be formed.
 %
-%
+% EXAMPLE:
+%   See xExample for a complete example of usage. 
+% 
+% SEE ALSO:
+%   xExample, xInitWorkers, xBroadcast, xComputeMimeticIP, 
+%   xDistributeIP, xGenerateCoarseSystem
+
+%{
+A part of the xmsmfem module for MRST:
+http://www.sintef.no/Projectweb/MRST/
+Adapted from the msmfem module with the Parallel Computing Toolbox
+
+Released under the GNU General Public License:
+http://www.gnu.org/licenses/gpl.html
+ 
+Written by
+Anders Hoff 2012
+http://master.andershoff.net
+%}
+
 
 spmd
-  linSolve = @mldivide;
+  linSolve = @mldivide; % linear algebra solver used for 
+                          % schur complement decomp.
   nBlk = max(cg.partition);
   avgmob = average_mobility(cg.partition,mob,g.cells.volumes);
   

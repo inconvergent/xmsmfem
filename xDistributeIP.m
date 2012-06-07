@@ -43,6 +43,25 @@ function [coX,coiG,coFaces] = xDistributeIP(X,g,cg,overlap,bc,activeBnd)
 %   (An that the needed ips are available when this function has been
 %   run.)
 %
+% EXAMPLE:
+%   See xExample for a complete example of usage. 
+% 
+% SEE ALSO:
+%   xExample, xInitWorkers, xBroadcast, xComputeMimeticIP, 
+%   xGenerateCoarseSystem, xEvalBasisFunc
+
+%{
+A part of the xmsmfem module for MRST:
+http://www.sintef.no/Projectweb/MRST/
+Adapted from the msmfem module with the Parallel Computing Toolbox
+
+Released under the GNU General Public License:
+http://www.gnu.org/licenses/gpl.html
+ 
+Written by
+Anders Hoff 2012
+http://master.andershoff.net
+%}
 
 spmd
   if labindex == 1    

@@ -2,7 +2,7 @@ function coX = xComputeMimeticIP(g,rock,facetrans)
 % 
 % calculates inverse ip_simple inner products in parallel and stores in 
 % distributed cell array coX.
-% that is, the ip of cell i is stored in coX{i}. 
+% That is, the ip of cell, i is stored in coX{i}. 
 % 
 % PARAMETERS:
 %
@@ -32,6 +32,26 @@ function coX = xComputeMimeticIP(g,rock,facetrans)
 % use xDistributeIP to distribute inner products to active workers in order
 % to construct basis functions in parallel with xGenerateCoarseSystem.
 %
+% EXAMPLE:
+%   See xExample for a complete example of usage. 
+% 
+% SEE ALSO:
+%   xExample, xInitWorkers, xBroadcast, 
+%   xDistributeIP, xGenerateCoarseSystem, xEvalBasisFunc
+
+%{
+A part of the xmsmfem module for MRST:
+http://www.sintef.no/Projectweb/MRST/
+Adapted from the msmfem module with the Parallel Computing Toolbox
+
+Released under the GNU General Public License:
+http://www.gnu.org/licenses/gpl.html
+ 
+Written by
+Anders Hoff 2012
+http://master.andershoff.net
+%}
+
 
 spmd
   % used on all workers

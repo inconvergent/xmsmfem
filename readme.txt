@@ -17,7 +17,7 @@ Download the most recent version of MRST here:
 
 
 xmsmfem consists of the following (8) files:
- -- xreadme.txt
+ -- readme.txt
  -- xInitWorkers.m
  -- xBroadcast.m
  -- xComputeMimeticIP.m
